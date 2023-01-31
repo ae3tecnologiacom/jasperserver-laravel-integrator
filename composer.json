@@ -1,0 +1,32 @@
+{
+  "name": "ae3/jasperserver-laravel-integrator",
+  "description": "Esta lib permite requisições às rotas rest2 do jasperserver a partir de um projeto em Laravel. ",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "José Tobias de Freitas Neto",
+      "email": "tobias@ae3tecnologia.com.br"
+    }
+  ],
+  "require": {
+    "php": "^7.1.3",
+    "laravel/framework": "5.8.*",
+    "jaspersoft/rest-client": "^2.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^3.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ae3\\JasperServer\\Laravel\\Integrator\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Ae3\\JasperServer\\Laravel\\Integrator\\app\\Providers\\IntegratorServiceProvider"
+      ]
+    }
+  }
+}
