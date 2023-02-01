@@ -230,26 +230,27 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     }
 
     /**
-     * @return string
+     * @return void
      */
-    public function inline(): string
+    public function inline(): void
     {
         $this->setContentDisposition(ContentDispositionEnum::INLINE);
-        return $this->getReport();
+        $this->setHeader($this->report);
+        echo $this->getReport();
     }
 
     /**
      * @param string|null $filename
-     * @return string
+     * @return void
      */
-    public function download(?string $filename): string
+    public function download(?string $filename): void
     {
         if (in_array($this->format, ReportFormatEnum::downloadable())) {
             $this->setContentDisposition(ContentDispositionEnum::ATTACHMENT);
             $this->setHeader($this->report, $filename);
         }
 
-        return $this->getReport();
+        echo $this->getReport();
     }
 
     /**

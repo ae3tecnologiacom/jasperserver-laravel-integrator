@@ -85,13 +85,13 @@ interface JasperServerRequestServiceContract
     public function call(string $uri): JasperServerRequestService;
 
     /**
-     * @return string
+     * @return void
      */
-    public function inline(): string;
+    public function inline(): void;
 
     /**
      * @param string|null $filename
-     * @return string
+     * @return void
      */
-    public function download(?string $filename): string;
+    public function download(?string $filename): void;
 }
