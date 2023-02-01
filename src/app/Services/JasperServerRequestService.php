@@ -243,7 +243,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string|null $filename
      * @return void
      */
-    public function download(?string $filename): void
+    public function download(?string $filename = null): void
     {
         if (in_array($this->format, ReportFormatEnum::downloadable())) {
             $this->setContentDisposition(ContentDispositionEnum::ATTACHMENT);
