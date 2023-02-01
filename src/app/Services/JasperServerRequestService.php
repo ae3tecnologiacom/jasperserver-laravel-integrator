@@ -200,7 +200,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     }
 
     /**
-     * @return string
+     * @return string Binary data of report
      */
     public function getReport(): string
     {
