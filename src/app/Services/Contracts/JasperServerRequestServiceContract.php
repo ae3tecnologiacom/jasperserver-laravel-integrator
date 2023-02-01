@@ -68,8 +68,15 @@ interface JasperServerRequestServiceContract
     public function setTransformerKey(string $transformerKey): JasperServerRequestService;
 
     /**
+     * @param string $contentDisposition
+     * @return $this
+     */
+    public function setContentDisposition(string $contentDisposition): JasperServerRequestService;
+
+    /**
      * @param string $uri
+     * @param string|null $pdfFilename
      * @return string
      */
-    public function call(string $uri): string;
+    public function call(string $uri, ?string $pdfFilename): string;
 }

@@ -2,6 +2,7 @@
 
 namespace Ae3\JasperServer\Laravel\Integrator\app\Services;
 
+use Ae3\JasperServer\Laravel\Integrator\app\Enums\ReportFormatEnum;
 use Ae3\JasperServer\Laravel\Integrator\app\Services\Contracts\JasperServerRequestServiceContract;
 use Jaspersoft\Client\Client;
 
@@ -15,7 +16,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     /**
      * @var string
      */
-    protected $format = 'html';
+    protected $format = null;
 
     /**
      * @var null
@@ -63,12 +64,18 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     protected $requestTimeout = 60;
 
     /**
+     * @var string
+     */
+    protected $contentDisposition = 'inline';
+
+    /**
      * @param Client $client
      */
     public function __construct(
         Client $client
     ) {
         $this->client = $client;
+        $this->format = ReportFormatEnum::HTML;
     }
 
     /**
@@ -176,12 +183,23 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     }
 
     /**
+     * @param string $contentDisposition
+     * @return $this
+     */
+    public function setContentDisposition(string $contentDisposition): self
+    {
+        $this->contentDisposition = $contentDisposition;
+        return $this;
+    }
+
+    /**
      * @param string $uri
+     * @param string|null $pdfFilename
      * @return string
      */
-    public function call(string $uri): string
+    public function call(string $uri, ?string $pdfFilename = null): string
     {
-        return $this->client->reportService()->runReport(
+        $report = $this->client->reportService()->runReport(
             $uri,
             $this->format,
             $this->pages,
@@ -193,5 +211,31 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
             $this->saveDataSnapshot,
             $this->transformerKey
         );
+
+        if ($this->format === 'pdf') {
+            $this->setPdfHeader($report, $pdfFilename);
+        }
+
+        return $report;
+    }
+
+    /**
+     * @param string $report
+     * @param string|null $pdfFilename
+     * @return void
+     */
+    private function setPdfHeader(string $report, ?string $pdfFilename = null)
+    {
+        if (!$pdfFilename) {
+            $pdfFilename = uniqid() . '.pdf';
+        }
+
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Description: File Transfer');
+        header("Content-Disposition: $this->contentDisposition;filename=$pdfFilename");
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . strlen($report));
+        header('Content-Type: application/pdf');
     }
 }
