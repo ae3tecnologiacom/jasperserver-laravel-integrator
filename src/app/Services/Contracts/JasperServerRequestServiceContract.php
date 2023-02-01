@@ -74,9 +74,24 @@ interface JasperServerRequestServiceContract
     public function setContentDisposition(string $contentDisposition): JasperServerRequestService;
 
     /**
+     * @return string
+     */
+    public function getReport(): string;
+
+    /**
      * @param string $uri
+     * @return $this
+     */
+    public function call(string $uri): JasperServerRequestService;
+
+    /**
+     * @return string
+     */
+    public function inline(): string;
+
+    /**
      * @param string|null $filename
      * @return string
      */
-    public function call(string $uri, ?string $filename = null): string;
+    public function download(?string $filename): string;
 }

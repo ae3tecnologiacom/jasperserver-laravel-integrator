@@ -2,6 +2,7 @@
 
 namespace Ae3\JasperServer\Laravel\Integrator\app\Services;
 
+use Ae3\JasperServer\Laravel\Integrator\app\Enums\ContentDispositionEnum;
 use Ae3\JasperServer\Laravel\Integrator\app\Enums\ReportFormatEnum;
 use Ae3\JasperServer\Laravel\Integrator\app\Services\Contracts\JasperServerRequestServiceContract;
 use Jaspersoft\Client\Client;
@@ -66,7 +67,12 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     /**
      * @var string
      */
-    protected $contentDisposition = 'inline';
+    protected $contentDisposition;
+
+    /**
+     * @var string
+     */
+    protected $report;
 
     /**
      * @param Client $client
@@ -75,7 +81,8 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
         Client $client
     ) {
         $this->client = $client;
-        $this->format = ReportFormatEnum::HTML;
+        $this->setFormat(ReportFormatEnum::HTML);
+        $this->setContentDisposition(ContentDispositionEnum::INLINE);
     }
 
     /**
@@ -193,13 +200,20 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     }
 
     /**
-     * @param string $uri
-     * @param string|null $filename
      * @return string
      */
-    public function call(string $uri, ?string $filename = null): string
+    public function getReport(): string
     {
-        $report = $this->client->reportService()->runReport(
+        return $this->report;
+    }
+
+    /**
+     * @param string $uri
+     * @return $this
+     */
+    public function call(string $uri): self
+    {
+        $this->report = $this->client->reportService()->runReport(
             $uri,
             $this->format,
             $this->pages,
@@ -212,11 +226,30 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
             $this->transformerKey
         );
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function inline(): string
+    {
+        $this->setContentDisposition(ContentDispositionEnum::INLINE);
+        return $this->getReport();
+    }
+
+    /**
+     * @param string|null $filename
+     * @return string
+     */
+    public function download(?string $filename): string
+    {
         if (in_array($this->format, ReportFormatEnum::downloadable())) {
-            $this->setHeader($report, $filename);
+            $this->setContentDisposition(ContentDispositionEnum::ATTACHMENT);
+            $this->setHeader($this->report, $filename);
         }
 
-        return $report;
+        return $this->getReport();
     }
 
     /**
