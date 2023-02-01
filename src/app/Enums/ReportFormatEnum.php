@@ -4,14 +4,14 @@ namespace Ae3\JasperServer\Laravel\Integrator\app\Enums;
 
 class ReportFormatEnum
 {
-    const PDF = "pdf";
-    const HTML = "html";
-    const XML = "xml";
-    const CSV = "csv";
-    const DOCX = "docx";
-    const ODT = "odt";
-    const ODS = "ods";
-    const XLSX = "xlsx";
+    public const PDF = "pdf";
+    public const HTML = "html";
+    public const XML = "xml";
+    public const CSV = "csv";
+    public const DOCX = "docx";
+    public const ODT = "odt";
+    public const ODS = "ods";
+    public const XLSX = "xlsx";
 
     /**
      * @return array

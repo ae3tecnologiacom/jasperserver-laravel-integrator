@@ -4,8 +4,8 @@ namespace Ae3\JasperServer\Laravel\Integrator\app\Enums;
 
 class ContentDispositionEnum
 {
-    const INLINE = "inline";
-    const ATTACHMENT = "attachment";
+    public const INLINE = "inline";
+    public const ATTACHMENT = "attachment";
 
     /**
      * @return array

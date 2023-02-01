@@ -280,7 +280,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @return string
      */
         private function appendFormatExtension(string $filename): string
-    {
-        return $filename . '.' . $this->format;
-    }
+        {
+            return $filename . '.' . $this->format;
+        }
 }
