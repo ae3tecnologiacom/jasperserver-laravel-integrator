@@ -194,10 +194,10 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
 
     /**
      * @param string $uri
-     * @param string|null $pdfFilename
+     * @param string|null $filename
      * @return string
      */
-    public function call(string $uri, ?string $pdfFilename = null): string
+    public function call(string $uri, ?string $filename = null): string
     {
         $report = $this->client->reportService()->runReport(
             $uri,
@@ -212,8 +212,8 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
             $this->transformerKey
         );
 
-        if ($this->format === 'pdf') {
-            $this->setPdfHeader($report, $pdfFilename);
+        if (in_array($this->format, ReportFormatEnum::downloadable())) {
+            $this->setHeader($report, $filename);
         }
 
         return $report;
@@ -221,21 +221,21 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
 
     /**
      * @param string $report
-     * @param string|null $pdfFilename
+     * @param string|null $filename
      * @return void
      */
-    private function setPdfHeader(string $report, ?string $pdfFilename = null)
+    private function setHeader(string $report, ?string $filename = null)
     {
-        if (!$pdfFilename) {
-            $pdfFilename = uniqid() . '.pdf';
+        if (!$filename) {
+            $filename = uniqid() . '.' . $this->format;
         }
 
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         header('Content-Description: File Transfer');
-        header("Content-Disposition: $this->contentDisposition;filename=$pdfFilename");
+        header("Content-Disposition: $this->contentDisposition;filename=$filename");
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . strlen($report));
-        header('Content-Type: application/pdf');
+        header('Content-Type: ' . ReportFormatEnum::getMimeType($this->format));
     }
 }

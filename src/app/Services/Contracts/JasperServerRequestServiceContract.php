@@ -75,8 +75,8 @@ interface JasperServerRequestServiceContract
 
     /**
      * @param string $uri
-     * @param string|null $pdfFilename
+     * @param string|null $filename
      * @return string
      */
-    public function call(string $uri, ?string $pdfFilename): string;
+    public function call(string $uri, ?string $filename = null): string;
 }
