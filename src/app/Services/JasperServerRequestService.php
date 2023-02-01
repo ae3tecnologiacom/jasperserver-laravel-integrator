@@ -261,8 +261,10 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     private function setHeader(string $report, ?string $filename = null)
     {
         if (!$filename) {
-            $filename = uniqid() . '.' . $this->format;
+            $filename = uniqid();
         }
+
+        $filename = $this->appendFormatExtension($filename);
 
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
@@ -271,5 +273,14 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . strlen($report));
         header('Content-Type: ' . ReportFormatEnum::getMimeType($this->format));
+    }
+
+    /**
+     * @param string $filename
+     * @return string
+     */
+        private function appendFormatExtension(string $filename): string
+    {
+        return $filename . '.' . $this->format;
     }
 }
