@@ -7,8 +7,7 @@ use Ae3\JasperServer\Laravel\Integrator\app\Enums\ReportFormatEnum;
 use Ae3\JasperServer\Laravel\Integrator\app\Services\Contracts\JasperServerRequestServiceContract;
 use Jaspersoft\Client\Client;
 
-class JasperServerRequestService implements JasperServerRequestServiceContract
-{
+class JasperServerRequestService implements JasperServerRequestServiceContract {
     /**
      * @var Client|null
      */
@@ -90,8 +89,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param $value
      * @return $this
      */
-    public function addInputControl(string $key, $value): self
-    {
+    public function addInputControl(string $key, $value): self {
         if (!$this->inputControls) {
             $this->inputControls = [];
         }
@@ -103,8 +101,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param int $timeout
      * @return $this
      */
-    public function setRequestTimeout(int $timeout): self
-    {
+    public function setRequestTimeout(int $timeout): self {
         $this->requestTimeout = $timeout;
         return $this;
     }
@@ -113,8 +110,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $format
      * @return $this
      */
-    public function setFormat(string $format): self
-    {
+    public function setFormat(string $format): self {
         $this->format = $format;
         return $this;
     }
@@ -123,8 +119,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param $attachmentsPrefix
      * @return $this
      */
-    public function setAttachmentsPrefix($attachmentsPrefix): self
-    {
+    public function setAttachmentsPrefix($attachmentsPrefix): self {
         $this->attachmentsPrefix = $attachmentsPrefix;
         return $this;
     }
@@ -133,8 +128,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param bool $freshData
      * @return $this
      */
-    public function setFreshData(bool $freshData): self
-    {
+    public function setFreshData(bool $freshData): self {
         $this->freshData = $freshData;
         return $this;
     }
@@ -143,8 +137,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param bool $interactive
      * @return $this
      */
-    public function setInteractive(bool $interactive): self
-    {
+    public function setInteractive(bool $interactive): self {
         $this->interactive = $interactive;
         return $this;
     }
@@ -153,8 +146,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param bool $onePagePerSheet
      * @return $this
      */
-    public function setOnePagePerSheet(bool $onePagePerSheet): self
-    {
+    public function setOnePagePerSheet(bool $onePagePerSheet): self {
         $this->onePagePerSheet = $onePagePerSheet;
         return $this;
     }
@@ -163,8 +155,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $pages
      * @return $this
      */
-    public function setPages(string $pages): self
-    {
+    public function setPages(string $pages): self {
         $this->pages = $pages;
         return $this;
     }
@@ -173,8 +164,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param bool $saveDataSnapshot
      * @return $this
      */
-    public function setSaveDataSnapshot(bool $saveDataSnapshot): self
-    {
+    public function setSaveDataSnapshot(bool $saveDataSnapshot): self {
         $this->saveDataSnapshot = $saveDataSnapshot;
         return $this;
     }
@@ -183,8 +173,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $transformerKey
      * @return $this
      */
-    public function setTransformerKey(string $transformerKey): self
-    {
+    public function setTransformerKey(string $transformerKey): self {
         $this->transformerKey = $transformerKey;
         return $this;
     }
@@ -193,8 +182,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $contentDisposition
      * @return $this
      */
-    public function setContentDisposition(string $contentDisposition): self
-    {
+    public function setContentDisposition(string $contentDisposition): self {
         $this->contentDisposition = $contentDisposition;
         return $this;
     }
@@ -202,8 +190,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     /**
      * @return string Binary data of report
      */
-    public function getReport(): string
-    {
+    public function getReport(): string {
         return $this->report;
     }
 
@@ -211,8 +198,11 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $uri
      * @return $this
      */
-    public function call(string $uri): self
-    {
+    public function call(string $uri): self {
+        if (method_exists($this->client, 'setRequestTimeout')) {
+            $this->client->setRequestTimeout($this->requestTimeout);
+        }
+
         $this->report = $this->client->reportService()->runReport(
             $uri,
             $this->format,
@@ -232,8 +222,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
     /**
      * @return void
      */
-    public function inline(): void
-    {
+    public function inline(): void {
         $this->setContentDisposition(ContentDispositionEnum::INLINE);
         $this->setHeader($this->report);
         echo $this->getReport();
@@ -243,8 +232,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string|null $filename
      * @return void
      */
-    public function download(?string $filename = null): void
-    {
+    public function download(?string $filename = null): void {
         if (in_array($this->format, ReportFormatEnum::downloadable())) {
             $this->setContentDisposition(ContentDispositionEnum::ATTACHMENT);
             $this->setHeader($this->report, $filename);
@@ -258,8 +246,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string|null $filename
      * @return void
      */
-    private function setHeader(string $report, ?string $filename = null)
-    {
+    private function setHeader(string $report, ?string $filename = null) {
         if (!$filename) {
             $filename = uniqid();
         }
@@ -279,8 +266,7 @@ class JasperServerRequestService implements JasperServerRequestServiceContract
      * @param string $filename
      * @return string
      */
-        private function appendFormatExtension(string $filename): string
-        {
-            return $filename . '.' . $this->format;
-        }
+    private function appendFormatExtension(string $filename): string {
+        return $filename . '.' . $this->format;
+    }
 }
