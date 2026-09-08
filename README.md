@@ -14,7 +14,7 @@ Esta lib permite requisições às rotas rest2 do jasperserver a partir de um pr
   "repositories": [
     {
       "type": "git",
-      "url": "https://git.ae3tecnologia.com.br/AE3_TECNOLOGIA_OPENSOURCE/jasperserver-laravel-integrator"
+      "url": "https://github.com/ae3tecnologiacom/jasperserver-laravel-integrator"
     }
   ]
 }
